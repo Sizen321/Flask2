@@ -15,7 +15,17 @@ fake = Faker("ru_RU")
 
 def create_files() -> None:
     """Function to create 3 files."""
-    pass
+    with open("./files/humans.txt", "w", encoding="utf-8") as humans_f:
+        for _ in range(10):
+            print(*fake.name().split(), sep=',', file=humans_f)
+
+    with open("./files/names.txt", "w", encoding="utf-8") as names_f:
+        for _ in range(10):
+            print(*fake.first_name().split(), sep=',', file=names_f)
+
+    with open("./files/users.txt", "w", encoding="utf-8") as users_f:
+        for _ in range(10):
+            print(*fake.simple_profile().values(), sep=';', file=users_f)
 
 
 @app.route("/")
@@ -24,4 +34,5 @@ def hello():
 
 
 if __name__ == '__main__':
+    create_files()
     app.run(debug=True)
