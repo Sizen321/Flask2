@@ -6,6 +6,7 @@
 
 Создать по 10 строк в каждом файле.
 """
+import sys
 from flask import Flask, render_template
 from faker import Faker
 
@@ -33,6 +34,16 @@ def hello():
     return render_template("index.html")
 
 
+@app.route("/names")
+def get_names():
+    names = list()
+    with open("./files/names.txt", encoding="utf-8") as f:
+        for raw_line in f:
+            names.append(raw_line.strip())
+        return "<br>".join(names)
+
+
 if __name__ == '__main__':
-    create_files()
+    if len(sys.argv) > 1 and sys.argv[1] == "--files":
+        create_files()
     app.run(debug=True)
