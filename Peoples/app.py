@@ -44,6 +44,17 @@ def get_names():
     return render_template("names.html", people_names=names) # {"people_names": name}
 
 
+@app.route("/table")
+def get_table():
+    entities = list()
+    with open("files/humans.txt", encoding="utf-8") as f: 
+        for raw_line in f:
+            data = raw_line.strip().split(',')
+            entities.append({'last_name': data[0], 
+            'name': data[1], 'surname': data[2]})
+    return render_template('table.html', entities=entities)
+
+
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == "--files":
         create_files()
