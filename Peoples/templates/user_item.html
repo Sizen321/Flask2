@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} {{ item.login }} {% endblock  %}
+
+{% block content %}
+
+    <b>Логин:</b> {{ item.login }} <br>
+    <b>Фамилия:</b> {{ item.last_name }} <br>
+    <b>Имя:</b> {{ item.name }} <br>
+    <b>Отчество:</b> {{ item.surname }} <br>
+    <b>Дата рождения:</b> {{ item.birth_date }} <br>
+    <b>Электронная почта:</b> {{ item.email }} <br>
+
+{% endblock  %}

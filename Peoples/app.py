@@ -7,7 +7,7 @@
 Создать по 10 строк в каждом файле.
 """
 import sys
-from flask import Flask, render_template
+from flask import Flask, abort, render_template
 from faker import Faker
 
 app = Flask(__name__)
@@ -53,6 +53,35 @@ def get_table():
             entities.append({'last_name': data[0], 
             'name': data[1], 'surname': data[2]})
     return render_template('table.html', entities=entities)
+
+
+@app.route("/users") 
+def users_list():
+    entities = list()
+    with open('files/users.txt', encoding="utf-8") as f: 
+        for raw_line in f:
+            data = raw_line.strip().split(';')
+            names = data[1].split()
+            entities.append({'login': data[0], 'last_name': names[0], 
+                            'name': names[1], 'surname': names[2], 
+                            'birth_date' : data[5], 'email': data[4]})
+    return render_template('users_list.html', entities=entities)
+
+
+@app.route("/users/<login>") 
+def user_info(login):
+    item = None
+    with open('files/users.txt', encoding="utf-8") as f: 
+        for raw_line in f:
+            data = raw_line.strip().split(';') 
+            names = data[1].split()
+            if data[0] == login:
+                item = {'login': data[0], 'last_name': names[0], 'name': names[1], 
+                    'surname': names[2], 'birth_date' : data[5], 'email': data[4]} 
+                break
+    if item is None: 
+        abort(404)
+    return render_template('user_item.html', item=item)
 
 
 if __name__ == '__main__':
