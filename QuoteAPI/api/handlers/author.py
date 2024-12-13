@@ -3,6 +3,11 @@ from api.models.author import AuthorModel
 from flask import abort, jsonify, request
 
 
+@app.route("/authors", methods=['GET'])
+def get_authors():
+    raise NotImplemented("Метод не реализован")
+
+
 @app.route("/authors", methods=['POST'])
 def create_author():
     author_data = request.json
