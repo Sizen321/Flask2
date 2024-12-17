@@ -12,8 +12,9 @@ class AuthorModel(db.Model):
     surname: Mapped[str] = mapped_column(String(32), index=True, default='Petrov', server_default="Smirnov")
     quotes: Mapped[WriteOnlyMapped] = relationship(back_populates='author')
 
-    def __init__(self, name):
+    def __init__(self, name, surname):
         self.name = name
+        self.surname = surname
 
     def to_dict(self):
         return {
