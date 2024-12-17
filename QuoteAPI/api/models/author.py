@@ -9,7 +9,7 @@ class AuthorModel(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(32), index= True, unique=True)
-    surname: Mapped[str] = mapped_column(String(32), index=True, unique=True, default='surname is unknown', nullable=True)
+    surname: Mapped[str] = mapped_column(String(32), index=True, default='Petrov', server_default="Smirnov")
     quotes: Mapped[WriteOnlyMapped] = relationship(back_populates='author')
 
     def __init__(self, name):
