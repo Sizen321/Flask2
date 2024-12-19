@@ -29,7 +29,7 @@ def create_author():
 def create_author_by_id(author_id: int):
     author = db.get_or_404(AuthorModel, author_id)
     # instance -> dict -> json
-    return jsonify(author.to_dict()), 200
+    return jsonify(authors_schema.dump(author)), 200
 
 
 @app.route("/authors/<int:author_id>", methods=['PUT'])
