@@ -17,7 +17,7 @@ def get_authors():
 @app.route("/authors", methods=['POST'])
 def create_author():
     author_data = request.json
-    author = AuthorModel(author_data.get('name', "Petr"))
+    author = AuthorModel(**author_data)
     db.session.add(author)
     try:
         db.session.commit()

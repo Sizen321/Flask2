@@ -1,8 +1,8 @@
 """0003 add surname to author
 
-Revision ID: 0d3da541683e
+Revision ID: 680e218e4991
 Revises: a3d746c6b636
-Create Date: 2024-12-17 22:34:52.685623
+Create Date: 2024-12-17 22:41:12.055479
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0d3da541683e'
+revision = '680e218e4991'
 down_revision = 'a3d746c6b636'
 branch_labels = None
 depends_on = None
