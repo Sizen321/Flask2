@@ -9,3 +9,19 @@ author_schema = AuthorSchema()
 result = author_schema.dump(author)
 
 print(type(result), result)
+
+
+authors = [
+   Author("1", "Alex"),
+   Author("1", "Ivan"),
+   Author("1", "Tom")
+]
+
+# Variant 1
+authors_schema = AuthorSchema(many=True)
+result_one = authors_schema.dump(authors)
+print(repr(result_one), type(result_one))
+
+# Variant 2
+result_two = authors_schema.dump(authors, many=True)
+print(repr(result_two), type(result_two))

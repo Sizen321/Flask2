@@ -2,15 +2,13 @@ from http import HTTPStatus
 from api import app, db
 from api.models.author import AuthorModel
 from flask import abort, jsonify, request
+from api.schemas.author import author_schema, authors_schema
 
 
 @app.route("/authors", methods=['GET'])
 def get_authors():
     authors_db = db.session.scalars(db.select(AuthorModel)).all()
-    authors = []
-    for author in authors_db:
-        authors.append(author.to_dict())
-    return jsonify(authors), 200
+    return jsonify(authors_schema.dump(authors_db)), 200
 
 
 
