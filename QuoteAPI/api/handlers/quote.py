@@ -6,28 +6,26 @@ from typing import Any
 from flask import jsonify, abort, request
 from . import validate
 from sqlalchemy.exc import InvalidRequestError
+from api.schemas.quote import quote_schema, quotes_schema
 
 # URL: /quotes
-@app.route("/quotes")
+@app.route("/quotes", methods=['GET'])
 def get_quotes() -> list[dict[str, Any]]:
     """ Функция неявно преобразовывает список словарей в JSON."""
     quotes_db = db.session.scalars(db.select(QuoteModel)).all()
-    quotes = []
-    for quote in quotes_db:
-        quotes.append(quote.to_dict())
-    return jsonify(quotes), 200
+    return jsonify(quotes_schema.dump(quotes_db)), 200
 
 
 # URL: /authors/1/quotes
-@app.route("/authors/<int:author_id>/quotes")
+@app.route("/authors/<int:author_id>/quotes", methods=['GET'])
 def get_author_quotes(author_id):
     """ Функция неявно преобразовывает список словарей в JSON."""
     author = db.session.get(AuthorModel, author_id)
-    quotes = []
-    for quote in author.quotes:
-        quotes.append(quote.to_dict())
+    # quotes = []
+    # for quote in author.quotes:
+    #     quotes.append(quote.to_dict())
     
-    return jsonify(author=author.to_dict() | {"quotes": quotes}), 200
+    return jsonify(quotes_schema.dump(author.quotes)), 200
 
 
 @app.route("/authors/<int:author_id>/quotes", methods=['POST'])

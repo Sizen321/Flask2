@@ -1,4 +1,6 @@
 from http import HTTPStatus
+
+from marshmallow import ValidationError
 from api import app, db
 from api.models.author import AuthorModel
 from flask import abort, jsonify, request
@@ -14,48 +16,53 @@ def get_authors():
 
 @app.route("/authors", methods=['POST'])
 def create_author():
-    author_data = request.json
-    author = AuthorModel(**author_data)
-    db.session.add(author)
+    # author_data = request.json 
     try:
+        author_data = author_schema.loads(request.data) # get_data
+        author = AuthorModel(**author_data)
+        db.session.add(author)
         db.session.commit()
+    except ValidationError as ve:
+        abort(400, f'Validation error: {str(ve)}')
     except Exception as e:
         db.session.rollback()
         abort(503, f"Database error: {str(e)}")
-    return jsonify(author.to_dict()), 201
+    return jsonify(author_schema.dump(author)), 201
                    
 
 @app.route("/authors/<int:author_id>", methods=['GET'])
 def create_author_by_id(author_id: int):
-    author = db.get_or_404(AuthorModel, author_id)
+    author = db.get_or_404(AuthorModel, author_id, description=f'Author with id={author_id} not found')
     # instance -> dict -> json
-    return jsonify(authors_schema.dump(author)), 200
+    return jsonify(author_schema.dump(author)), 200
 
 
 @app.route("/authors/<int:author_id>", methods=['PUT'])
 def edit_author(author_id: int):
-    author: AuthorModel = db.get_or_404(AuthorModel, author_id)
-    data: dict = request.json
-    if len(data) == 0:
-        return "No valid data to update", HTTPStatus.BAD_REQUEST
+    author: AuthorModel = db.get_or_404(AuthorModel, author_id, description=f'Author with id={author_id} not found')
     try:
-        for key, value in data.items():
-            if not hasattr(author, key):
-                raise Exception(f"Invalid key: {key}. Valid: author")
-            setattr(author, key, value)
+        data = author_schema.loads(request.data)
+    except ValidationError as ve:
+        abort(400, f'Validation error: {str(ve)}')
+
+    for key, value in data.items():
+        setattr(author, key, value)
+    
+    try:
         db.session.commit()
-        return author.to_dict(), 200
     except Exception as e:
-        return str(e), HTTPStatus.BAD_REQUEST
+        db.session.rollback()
+        abort(503, f'Database error: {str(e)}')
+    return jsonify(author_schema.dump(author)), 200
 
 
 @app.route("/authors/<int:author_id>", methods=["DELETE"])
 def delete_author(author_id:int):
-    author = db.get_or_404(AuthorModel, author_id)
+    author = db.get_or_404(AuthorModel, author_id, description=f'Author with id={author_id} not found')
     db.session.delete(author)
     try:
         db.session.commit()
-        return f"Author with id {author_id} deleted"
     except Exception as e:
         db.session.rollback()
         abort(503, f"Database error: {str(e)}")
+    return f"Author with id {author_id} deleted"
