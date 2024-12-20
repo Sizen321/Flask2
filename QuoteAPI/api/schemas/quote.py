@@ -15,9 +15,10 @@ class QuoteSchema(ma.SQLAlchemySchema):
 
    id = ma.auto_field()
    text = ma.auto_field()
-   author = ma.Nested(AuthorSchema())
+#    author = ma.Nested(AuthorSchema().id)
+   author_id = ma.auto_field()
    rating = ma.Integer(strict=True, validate=rating_validate)
 
-quote_schema = QuoteSchema()
+quote_schema = QuoteSchema(exclude=["author_id"])
 quotes_schema = QuoteSchema(many=True)
 quote_without_rating = QuoteSchema(exclude=["rating"])
